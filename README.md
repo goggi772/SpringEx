@@ -27,3 +27,9 @@ Spring 통해 만들어보는 예제
 -일단 회원 저장소는 메모리를 사용하여 하는것으로 한다.
 
 -메모리 회원 저장소 구현체인 MemoryMemberRepository클래스와 회원 서비스 구현체인 MemberServiceImpl클래스를 생성한다.
+
+회원 도메인 테스트
+
+*MemberApp은 순수 자바만을 이용하여 테스트를 함
+
+*junit을 사용하여 MemberServiceTest를 진행
