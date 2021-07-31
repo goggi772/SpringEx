@@ -18,8 +18,12 @@ Spring 통해 만들어보는 예제
 회원 도메인 설계 
 
 -회원 등급을 나타내는 grade enum클래스를 생성한다.
+
 -회원 엔티티인 Member 클래스를 생성한다. Member에는 id, name, grade가 있다.
+
 -회원가입과 조회를 할 수 있는 회원 저장소 MemberRepository 인터페이스와 회원 서비스 MemberService 인터페이스를 생성
 기본적으로 MemberRepository는 save와 findById 메소드가 있고 MemberService는 join과 findMember 메소드가 있다.
+
 -일단 회원 저장소는 메모리를 사용하여 하는것으로 한다.
+
 -메모리 회원 저장소 구현체인 MemoryMemberRepository클래스와 회원 서비스 구현체인 MemberServiceImpl클래스를 생성한다.
