@@ -33,3 +33,25 @@ Spring 통해 만들어보는 예제
 *MemberApp은 순수 자바만을 이용하여 테스트를 함
 
 *junit을 사용하여 MemberServiceTest를 진행
+
+
+2021/8/1
+
+
+주문과 회원 도메인 개발 + 테스트
+
+*할인 정책은 변경될수 있으므로 인터페이스를 만들어 개발한다.
+
+-할인 정책 인터페이스 DiscountPolicy를 만든다.
+
+-고정으로 할인해주는 구현체 FixDiscountPolicy를 만들고 회원 등급에 따라 할인해주는 메소드 discount를 만든다.
+
+-그 다음으로 주문 도메인 Order 클래스를 생성한다. Order클래스에는 memberId, itemName, itemPrice, dicountPrice가 있다.
+
+-주문 도메인 인터페이스 OrderService를 생성해 createOrder메소드를 만든다.
+
+-구현체 OrderServiceImpl를 생성한다.
+
+*OrderApp 또한 순수 자바만을 이용하여 테스트 진행
+
+
