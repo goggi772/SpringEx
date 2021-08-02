@@ -55,3 +55,21 @@ Spring 통해 만들어보는 예제
 *OrderApp 또한 순수 자바만을 이용하여 테스트 진행
 
 
+2021/8/2
+
+
+정률 할인 정책
+
+-기획자가 고정할인정책에서 정률할인정책으로 변경 요구하였다고 가정
+
+-정률 할인 정책 RateDiscountPolicy 클래스를 만들어 새로운 할인 정책으로 변경
+
+-FixDiscountPolicy에서 RateDiscountPolicy로 적용
+
+*RateDiscountPolicyTest를 만들어 테스트 진행*
+
+-할인 정책을 변경하려면 주문 도메인 OrderServiceImpl을 수정해야한다. 이는 OCP와 DIP를 위반하게된다.
+
+-OrderServiceImpl는 DiscountPolicy인터페이스와 구현체 둘다 의존하므로 인터페이스에만 의존하도록 수정해야한다.
+하지만 그렇게 수정하게 되면 NullPointException이 발생한다.(OrderServiceImpl - private final DiscountPolicy discountPolicy = new RateDiscountPolicy(); -> private DiscountPolicy discountPolicy;)
+
