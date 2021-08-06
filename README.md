@@ -69,9 +69,9 @@
 *RateDiscountPolicyTest를 만들어 테스트 진행*
 
 - 할인 정책을 변경하려면 주문 도메인 OrderServiceImpl을 수정해야한다. 이는 OCP와 DIP를 위반하게된다.
-- 
+
 - OrderServiceImpl는 DiscountPolicy인터페이스와 구현체 둘다 의존하므로 인터페이스에만 의존하도록 수정해야한다.
-하지만 그렇게 수정하게 되면 NullPointException이 발생한다.(OrderServiceImpl - private final DiscountPolicy discountPolicy = new RateDiscountPolicy(); -> private DiscountPolicy discountPolicy;)
+하지만 그렇게 수정하게 되면 NullPointException이 발생한다.<br/>```(OrderServiceImpl : private final DiscountPolicy discountPolicy = new RateDiscountPolicy(); ```<br/>```-> private DiscountPolicy discountPolicy;)```
 
 
 
@@ -95,3 +95,33 @@
 - 처음 구현한 AppConfig는 중복이 있고 역할에 따른 구현이 잘 구분되지 않는다.
 - 따라서 리팩터링을 통해 중복을 제거하고 역할에 따른 구현이 잘 보이도록 한다.
 - 이는 전체 구성이 어떻게 되어있는지 빠르게 파악할 수 있다.
+
+
+### 2021/8/6
+
+
+**스프링으로 전환**
+- 지금까지는 오직 자바로 DI를 적용했다. 이제는 스프링을 사용해보자.
+- AppConfig에 ```@Configuration```을 붙이고 각 메소드에 ```@Bean```을 붙이면 스프링 컨테이너에 스프링 빈이 등록된다.
+- 그러면 이전에 AppConfig를 통해 생성한 객체는 필요가 없고 위 코드로 스프링 컨테이너에 생성되어 있는 객체를 불러올 수 있다.
+
+        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
+        MemberService memberService = applicationContext.getBean("memberService", MemberService.class);
+        
+- ApplicationContext를 스프링 컨테이너라 하며 스프링 컨테이너는 ```@Configuration```이 붙은것을 설정 정보로 사용한다.
+- 그리고 ```@Bean```이 붙은 메소드들을 모두 호출해 반환된 객체를 스프링 컨테이너에 등록한다.
+- 이는 이전에 직접 자바코드로 짠 것보다 훨씬 큰 장점이 생긴다.
+- 스프링 컨테이너는 스프링 빈을 생성하고 의존관계를 주입하는데 단계가 정해져 있다. 먼저 스프링 빈이 생성되면 스프링 컨테이너는 설정 정보를 참고하여 의존관계를 주입한다.
+
+* 스프링 빈 조회 테스트
+
+- ApplicationContextInfoTest는 스프링 빈들이 잘 등록되었는지 확인하는 테스트 클래스이다.
+- ```getDefinitionNames()```를 사용하면 등록된 스프링 빈들의 이름을 출력해준다.
+- 스프링 내부에서 사용하는 빈들을 제외한 내가 등록한 스프링 빈들만 출력해보자
+- 스프링 내부에서 사용하는 빈들은 ```getRole()```로 구분이 가능하다.
+
+
+       if (beanDefinition.getRole() == BeanDefinition.ROLE_APPLICATION) //직접 등록한 스프링 빈인지 확인
+       
+ ROLE_APPLICATION: 직접 등록한 애플리케이션 빈 <br/>
+ ROLE_INFRASTRUCTURE: 스프링이 내부에서 사용하는 빈
