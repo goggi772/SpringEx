@@ -125,3 +125,33 @@
        
  ROLE_APPLICATION: 직접 등록한 애플리케이션 빈 <br/>
  ROLE_INFRASTRUCTURE: 스프링이 내부에서 사용하는 빈
+
+
+### 2021/8/8 ~ 9
+
+
+**스프링 빈 조회 테스트**
+
+- 스프링 빈을 조회할 수 있는 방법을 테스트 해보자
+- 스프링 빈 조회 - 동일한 타입이 두개 이상일때
+- 타입으로 스프링 빈 조회할시 동일한 타입이 두개 이상이면 오류가 발생한다.
+- 이럴때는 스프링 빈의 이름을 지정해야한다.
+- ```getBeansOfType```을 이용하면 해당 타입의 모든 빈의 조회할 수 있다.
+- 스프링 빈 조회 - 상속관계
+- 상속관계에 있는 타입을 조회하면 자식 타입과 부모타입 둘다 조회된다.
+- 그리고 모든 타입의 부모타입는 Object타입 이므로 Object타입을 조회하면 모든 스프링 빈을 조회할 수 있다.
+
+
+### 2021/8/10
+
+
+**BeanFactory와 ApplicationContext**
+
+- BeanFactory: 스프링 컨테이너의 최상위 인터페이스, 스프링 빈을 관리하고 조회하는 역할
+- ApplicationContext: BeanFactory를 상속받음, 빈 관리기능 + 편리한 부가기능 제공
+- 즉 ApplicationContext는 BeanFactory + 편리한 부가기능 이다.<br/>
+ApplicationContext의 부가기능<br/>
+- MessageSource: 메시지소스를 활용한 국제화 기능
+- EnvironmentCapable: 환경변수(로컬, 개발, 운영을 구분해서 처리)
+- ApplicationEventPublisher: 애플리케이션 이벤트
+- ResourceLoader: 편리한 리소스 조회
