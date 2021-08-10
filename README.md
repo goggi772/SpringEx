@@ -140,3 +140,18 @@
 - 스프링 빈 조회 - 상속관계
 - 상속관계에 있는 타입을 조회하면 자식 타입과 부모타입 둘다 조회된다.
 - 그리고 모든 타입의 부모타입는 Object타입 이므로 Object타입을 조회하면 모든 스프링 빈을 조회할 수 있다.
+
+
+### 2021/8/10
+
+
+**BeanFactory와 ApplicationContext**
+
+- BeanFactory: 스프링 컨테이너의 최상위 인터페이스, 스프링 빈을 관리하고 조회하는 역할
+- ApplicationContext: BeanFactory를 상속받음, 빈 관리기능 + 편리한 부가기능 제공
+- 즉 ApplicationContext는 BeanFactory + 편리한 부가기능 이다.<br/>
+ApplicationContext의 부가기능<br/>
+- MessageSource: 메시지소스를 활용한 국제화 기능
+- EnvironmentCapable: 환경변수(로컬, 개발, 운영을 구분해서 처리)
+- ApplicationEventPublisher: 애플리케이션 이벤트
+- ResourceLoader: 편리한 리소스 조회
