@@ -155,3 +155,13 @@ ApplicationContext의 부가기능<br/>
 - EnvironmentCapable: 환경변수(로컬, 개발, 운영을 구분해서 처리)
 - ApplicationEventPublisher: 애플리케이션 이벤트
 - ResourceLoader: 편리한 리소스 조회
+
+
+**XML**
+
+- 스프링 컨테이너는 다양한 형식의 설정정보를 받아들일수 있다.
+- AnnotationConfigApplicationContext -> AppConfig.class (자바코드)
+- GenericXmlApplicationContext -> appConfig.xml(Xml)
+- ~~~ ApplicationContext -> appConfig.~~~ (임의)
+- Xml기반의 설정 정보인 appConfig.xml을 보면 자바코드로 된 AppConfig.class와 거의 비슷하다.
+- 최근 실무에서는 Xml을 잘 사용하지 않고 주로 Spring Boot를 이용해 자바코드로 사용한다.
