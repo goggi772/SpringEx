@@ -162,6 +162,29 @@ ApplicationContext의 부가기능<br/>
 - 스프링 컨테이너는 다양한 형식의 설정정보를 받아들일수 있다.
 - AnnotationConfigApplicationContext -> AppConfig.class (자바코드)
 - GenericXmlApplicationContext -> appConfig.xml(Xml)
-- ~~~ ApplicationContext -> appConfig.~~~ (임의)
+- ~~ ApplicationContext -> appConfig.~~ (임의)
 - Xml기반의 설정 정보인 appConfig.xml을 보면 자바코드로 된 AppConfig.class와 거의 비슷하다.
 - 최근 실무에서는 Xml을 잘 사용하지 않고 주로 Spring Boot를 이용해 자바코드로 사용한다.
+
+
+**스프링 빈 설정 메타 정보(BeanDefinition)**
+
+- 스프링은 ```BeanDefinition``` 추상화를 이용하여 다양한 설정 형식을 지원한다.
+- BeanDefinition은 역할과 구현을 개념적으로 나눈것
+- 스프링 컨테이너는 설정 정보가 xml인지 자바코드인지 BeanDefinition을 통해 구분한다. 즉 스프링 컨테이너는 오직 BeanDefinition만 알면된다.
+- AnnotationConfigApplicationContext를 보면 AnnotatedBeanDefinitionReader를 통해 설정 정보를 읽고 BeanDefinition을 생성한다.
+- GenericXmlApplicationContext를 보면 XmlBeanDefinitionReader를 통해 설정 정보를 읽고 BeanDefinition을 생성한다.
+
+BeanDefinition정보<br/>
+- BeanClassName: 생성할 빈의 클래스 명(자바 설정 처럼 팩토리 역할의 빈을 사용하면 없음)
+- factoryBeanName: 팩토리 역할의 빈을 사용할 경우 이름, 예) appConfig
+- factoryMethodName: 빈을 생성할 팩토리 메서드 지정, 예) memberService
+- Scope: 싱글톤(기본값)
+- lazyInit: 스프링 컨테이너를 생성할 때 빈을 생성하는 것이 아니라, 실제 빈을 사용할 때 까지 최대한
+생성을 지연처리 하는지 여부
+- InitMethodName: 빈을 생성하고, 의존관계를 적용한 뒤에 호출되는 초기화 메서드 명
+- DestroyMethodName: 빈의 생명주기가 끝나서 제거하기 직전에 호출되는 메서드 명
+- Constructor arguments, Properties: 의존관계 주입에서 사용한다. (자바 설정 처럼 팩토리 역할
+의 빈을 사용하면 없음)
+
+- 이러한 BeanDefinition은 실무에서 직접 정의하거나 사용할일이 거의 없다.
