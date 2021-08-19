@@ -236,3 +236,20 @@ BeanDefinition정보<br/>
 - ```StatefulServiceTest```를 돌려보면 나는 userA의 주문금액 10000원을 조회했지만 중간에 생성한 userB의 주문금액인 20000원이 return되었다.
 - 이는 싱글톤 방식인 객체를 하나만 만들어 공유하였기 때문에 발생한 문제이다.
 - 이러한 오류를 막기 위해 스프링 빈은 항상 무상태(stateless)로 설계해야한다.
+
+
+### 2021/8/20
+
+
+**컴포넌트 스캔**
+(컴포넌트 스캔과 의존관계 자동 주입)
+
+- ```AppConfig```와 같이 스프링 빈을 직접 입력해서 등록할 수도 있지만 컴포넌트 스캔을 이용하면 자동으로 스프링 빈을 등록할 수 있다.
+- 컴포넌트 스캔을 사용하려면 설정 정보 클래스에 ```@ComponentScan```을 붙여줘야 한다.
+- 이 ```@ComponentScan```은 ```@Component``` 애노테이션이 붙은 클래스를 자동으로 스캔하여 스프링 빈으로 등록한다.
+- ```AutoAppConfig```에 있는 ```excludeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = Configuration.class```는 직접 입력하고 테스트용으로 만든
+스프링 빈을 제외하기 위해 ```@Configuration```이 붙은 것은 컴포넌트 스캔을 하지 못하도록 막은것이다. (@Configuration안에 @Component가 있어서 @Configuration 또한 자동으로 스캔된다.)
+- 컴포넌트 스캔을 이용하여 스프링 빈으로 등록했지만 의존관계는 아직 주입되지 않았다. 
+- 하지만 의존관계 또한 ```@AutoWired```를 통해 자동으로 주입할 수 있다. 
+- 클래스 생성자에 ```@AutoWired``` 애노테이션을 붙이면 스프링이 자동으로 의존관계를 주입해 준다.
+- 앞에서 했던 ac.getBean(MemberRepository.class)와 비슷하다고 이해하면 된다.
