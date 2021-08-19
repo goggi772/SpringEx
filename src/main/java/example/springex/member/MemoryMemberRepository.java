@@ -1,8 +1,11 @@
 package example.springex.member;
 
+import org.springframework.stereotype.Component;
+
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class MemoryMemberRepository implements MemberRepository{
 
     //동시성 이슈를 다루기위해 실무에서는 concurrenthashmap을 사용

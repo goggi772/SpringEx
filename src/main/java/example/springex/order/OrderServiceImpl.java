@@ -6,7 +6,10 @@ import example.springex.discount.RateDiscountPolicy;
 import example.springex.member.Member;
 import example.springex.member.MemberRepository;
 import example.springex.member.MemoryMemberRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class OrderServiceImpl implements OrderService{
 
 //    private final MemberRepository memberRepository = new MemoryMemberRepository();
@@ -19,6 +22,7 @@ public class OrderServiceImpl implements OrderService{
     //그러나 객체를 생성하지않아 NullPointException발생
     private final DiscountPolicy discountPolicy;
 
+    @Autowired
     public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
         this.memberRepository = memberRepository;
         this.discountPolicy = discountPolicy;
