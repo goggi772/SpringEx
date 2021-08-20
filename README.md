@@ -253,3 +253,29 @@ BeanDefinition정보<br/>
 - 하지만 의존관계 또한 ```@AutoWired```를 통해 자동으로 주입할 수 있다. 
 - 클래스 생성자에 ```@AutoWired``` 애노테이션을 붙이면 스프링이 자동으로 의존관계를 주입해 준다.
 - 앞에서 했던 ac.getBean(MemberRepository.class)와 비슷하다고 이해하면 된다.
+
+
+### 2021/8/21
+
+
+**필터, 중복 등록과 충돌**
+
+- '스캔' 으로 커밋한 것은 컴포넌트 스캔에서 필터를 이용해 스프링 빈으로 등록할지 제외할지 해보는 테스트이다.
+- ```includeFilters```는 컴포넌트 스캔 대상을 추가로 지정한다.
+- ```excludeFilters```는 컴포넌트 스캔에서 제외할 대상을 지정한다.<br/>
+
+- 컴포넌트 스캔에서 이름이 같은 빈을 등록할 경우
+- 두가지 상황: 자동 빈 등록-자동 빈 등록, 수동 빈 등록-자동 빈 등록
+- 컴포넌트 스캔에 의해 자동으로 빈이 등록될때 이름이 같은 경우 스프링이 오류를 발생시킨다.
+- ```ConflictingBeanDefinitionException```예외가 발생한다.
+- 컴포넌트 스캔에 의해 자동으로 빈이 등록되고 수동으로 스프링 빈을 등록할 때 이름이 같을 경우
+- 수동 빈이 등록 우선권을 가진다. (수동 빈이 자동 빈을 오버라이딩함)
+- 수동 빈을 등록할때 남는 로그는 위와 같다.
+
+       Overriding bean definition for bean 'memoryMemberRepository' with a different 
+       definition: replacing
+       
+- 이는 여러가지 설정이 꼬여서 발생하는 결과이다. 그러면 잡기 어렵고 애매한 버그가 만들어 진다.
+- 그래서 스프링 부트는 수동 빈과 자동 빈이 충돌하면 에러가 발생하도록 기본값을 바꿨다.
+```Consider renaming one of the beans or enabling overriding by setting spring.main.allow-bean-definition-overriding=true```
+- 이러면 쉽게 버그를 고칠 수 있다.
