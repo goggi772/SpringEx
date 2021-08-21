@@ -279,3 +279,89 @@ BeanDefinition정보<br/>
 - 그래서 스프링 부트는 수동 빈과 자동 빈이 충돌하면 에러가 발생하도록 기본값을 바꿨다.
 ```Consider renaming one of the beans or enabling overriding by setting spring.main.allow-bean-definition-overriding=true```
 - 이러면 쉽게 버그를 고칠 수 있다.
+
+
+### 2021/8/22
+
+
+**의존관계 자동 주입**
+
+- 의존관계를 주입하는 방법은 크게 네가지가 있다.
+1. 생성자 주입
+2. 수정자 주입(setter)
+3. 필드 주입
+4. 일반 메소드 주입
+
+*생성자 주입*
+- 생성자를 통해 의존관계를 주입하는 방법이다.
+- 특징: 생성자를 호출할때만 딱 한번 호출되는것이 보장된다 / 불변, 필수 의존관계에 사용
+
+       @Autowired
+       public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy 
+       discountPolicy) {
+       this.memberRepository = memberRepository;
+       this.discountPolicy = discountPolicy;
+       }
+       
+생성자가 한개일때는 ```@Autowired```생략 가능
+
+*수정자 주입*
+- setter 메소드를 통해서 의존관계를 주입하는 방법이다.
+- 특징: 선택, 변경 가능성이 있는 의존관계에 사용
+
+      @Component
+      public class OrderServiceImpl implements OrderService {
+              private MemberRepository memberRepository;
+              private DiscountPolicy discountPolicy;
+       
+              @Autowired
+              public void setMemberRepository(MemberRepository memberRepository) {
+              this.memberRepository = memberRepository;
+              }
+              
+              @Autowired
+              public void setDiscountPolicy(DiscountPolicy discountPolicy) {
+              this.discountPolicy = discountPolicy;
+              }
+       
+*필드 주입*
+- 필드에 바로 의존관계를 주입하는 방법이다.
+- 특징: 코드가 간결하지만 외부에서 변경하기가 어렵다. 따라서 테스트하기가 어렵다. / DI 프레임워크가 있어야한다. / 사용 안하는게 좋다.
+
+       @Autowired private MemberRepository memberRepository;
+       @Autowired private DiscountPolicy discountPolicy;
+       
+*일반 메소드 주입*
+- 일반 메소드를 통해 의존관계를 주입하는 방법이다.
+- 특징: 한번에 여러개의 필드를 주입할 수 있다. / 잘 사용하지 않는다.
+
+       @Autowired
+       public void xxxxx(MemberRepository memberRepository, DiscountPolicy 
+       discountPolicy) {
+       this.memberRepository = memberRepository;
+       this.discountPolicy = discountPolicy;
+       }
+       
+
+**옵션**
+- 때로는 스프링 빈이 없어도 동작해야 할 때가 있다.
+- 그런데 @Autowired 만 사용하면 required 옵션의 기본값이 true 로 되어 있어서 자동 주입 대상이 없으면 오류가 발생할 수도 있다.
+- ```AutowiredTest.java```를 참고하면 자동 주입 대상을 옵션으로 처리하는 방법에는 여러가지가 있다.<br/>
+- @Autowired(required=false) : 자동 주입할 대상이 없으면 수정자 메서드 자체가 호출 안됨
+- org.springframework.lang.@Nullable : 자동 주입할 대상이 없으면 null이 입력된다.
+- Optional<> : 자동 주입할 대상이 없으면 Optional.empty 가 입력된다.<br/>
+
+과거에는 수정자 주입을 많이 사용했지만 최근에 들어서는 스프링을 포함해 DI 프레임 워크 대부분이 생성자 주입을 권장하고 있다.<br/>
+그 이유는 다음과 같다.
+- 생성자 주입은 객체를 생성할 때 딱 1번만 호출되므로 이후에 호출되는 일이 없다.(불변)
+- 수정자 주입을 사용하면 순수 자바 코드로 테스트를 진행할때 
+
+       @Test
+       void createOrder() {
+       OrderServiceImpl orderService = new OrderServiceImpl();
+        orderService.createOrder(1L, "itemA", 10000);
+       }
+
+와 같이 테스트를 하면 NPE가 발생하게된다. 그 이유는 순수 자바코드로 테스트 하는것이고 위의 수정자 주입에서 memberRepository, discountPolicy의 의존관계가 누락되었기 때문이다.
+- 생성자 주입을 사용하면 final키워드를 사용할 수 있는데 이는 혹시라도 값이 설정되지 않았을 경우 컴파일에러를 발생시켜 수정하기 쉽게 알려준다.<br/>
+이 final키워드는 다른 주입 방법은 사용하지 못하고 오직 생성자 주입만 사용할 수 있으므로 생성자 주입에 더욱 유용하다.
