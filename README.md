@@ -365,3 +365,56 @@ BeanDefinition정보<br/>
 와 같이 테스트를 하면 NPE가 발생하게된다. 그 이유는 순수 자바코드로 테스트 하는것이고 위의 수정자 주입에서 memberRepository, discountPolicy의 의존관계가 누락되었기 때문이다.
 - 생성자 주입을 사용하면 final키워드를 사용할 수 있는데 이는 혹시라도 값이 설정되지 않았을 경우 컴파일에러를 발생시켜 수정하기 쉽게 알려준다.<br/>
 이 final키워드는 다른 주입 방법은 사용하지 못하고 오직 생성자 주입만 사용할 수 있으므로 생성자 주입에 더욱 유용하다.
+
+
+### 2021/9/1
+
+
+**롬복, 스프링 빈을 조회할때 두개 이상일때**
+- 롬복이라는 라이브러리를 이용하면 더욱 간결하게 코드를 짤 수 있다.
+- @Getter, @Setter, @RequiredArgsConstructor 등을 이용하면 더욱 보기 좋다. (getter와 setter, 그리고 생성자를 자동으로 만들어 준다.)
+- 스프링 빈을 조회할때는 타입으로 조회한다. 그런데 타입이 같은 빈이 두개가 있으면 에러가 발생한다.
+- 이를 해결하기 위해서는 세가지 방법이 있다.<br/>
+*@Autowired 필드 명, @Qualifier, @Primary<br/>
+- @Autowired 필드 명 매칭
+- ```@Autowired``` 는 타입 매칭을 시도하고, 이때 여러 빈이 있으면 필드 이름, 파라미터 이름으로 빈 이름을 추가 매칭한다.
+- 따라서 필드 명을 빈 이름으로 변경하면 에러가 나지않고 주입할 수 있다.
+
+       @Autowired
+       private DiscountPolicy discountPolicy -> private DiscountPolicy ratediscountPolicy
+       
+@Autowired 정리
+1. 타입 매칭
+2. 타입 매칭의 결과가 2개 이상일 때 필드 명, 파라미터 명으로 빈 이름 매칭<br/>
+
+- @Qualifier 사용
+- @Qualifier 는 추가 구분자를 붙여주는 방법이다. 주입시 추가적인 방법을 제공하는 것일뿐 빈 이름을 변경하는 것은 아니다.
+
+       @Component
+       @Qualifier("mainDiscountPolicy")
+       public class RateDiscountPolicy implements DiscountPolicy {}
+       
+       @Autowired
+       public OrderServiceImpl(MemberRepository memberRepository, @Qualifier("mainDiscountPolicy") DiscountPolicy discountPolicy) {
+              this.memberRepository = memberRepository;
+              this.discountPolicy = discountPolicy;
+       }
+       
+@Qualifier 정리
+1. @Qualifier끼리 매칭
+2. 빈 이름 매칭
+3. ```NoSuchBeanDefinitionException``` 예외 발생<br/>
+
+@Primary 사용
+- @Primary 는 우선순위를 정하는 방법이다. @Autowired 시에 여러 빈이 매칭되면 @Primary 가 있는 빈이 우선권을 가진다.
+
+       @Component
+       @Primary
+       public class RateDiscountPolicy implements DiscountPolicy {}
+       
+       @Component
+       public class FixDiscountPolicy implements DiscountPolicy {}
+       
+- 이러면 타입이 같은 빈이 두개지만 @Primary 때문에 rateDiscountPolicy가 빈으로 등록된다.<br/>
+
+@Primary는 기본값처럼 동작하고 @Qualifier는 상세하게 동작한다. 따라서 스프링은 좁은 범위의 것을 우선순위로 두기때문에 @Qualifier가 우선권을 가지게 된다.
