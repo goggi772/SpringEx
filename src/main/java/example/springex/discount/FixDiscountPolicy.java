@@ -2,7 +2,9 @@ package example.springex.discount;
 
 import example.springex.member.Grade;
 import example.springex.member.Member;
+import org.springframework.stereotype.Component;
 
+@Component
 public class FixDiscountPolicy implements DiscountPolicy {
 
     private int discountFixAmount = 1000; //1000원 고정 할인
